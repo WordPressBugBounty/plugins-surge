@@ -70,11 +70,15 @@ function config( $key ) {
 		$config = array_merge( $config, $_config );
 	}
 
-	foreach ( $config as $key => $value ) {
-		$const = 'SURGE_' . strtoupper( $key );
+	foreach ( $config as $config_key => $value ) {
+		$const = 'SURGE_' . strtoupper( $config_key );
 		if ( defined( $const ) ) {
-			$config[ $key ] = constant( $const );
+			$config[ $config_key ] = constant( $const );
 		}
+	}
+
+	if ( defined( 'SURGE_CONFIG_CALLBACK' ) && is_callable( SURGE_CONFIG_CALLBACK ) ) {
+		$config = call_user_func( SURGE_CONFIG_CALLBACK, $config );
 	}
 
 	return $config[ $key ];
